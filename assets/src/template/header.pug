@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Document
+        link(rel="stylesheet", href="css/main.min.css")
+        mixin webp(name, type)
+            - var path = "img/" + name
+            picture
+                source(srcset= path + '.webp' type="image/webp")
+                source(srcset= path + '.' + type type="image/" + type)
+                img(src=path + "." + type, alt=name)
+
+
+    
+        

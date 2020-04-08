@@ -10,14 +10,14 @@ var path = {
         fonts: 'assets/build/fonts/'
     },
     src: {
-        html: 'assets/src/*.html',
+        html: 'assets/src/*.pug',
         js: 'assets/src/js/main.js',
         style: 'assets/src/style/main.sass',
         img: 'assets/src/img/**/*.*',
         fonts: 'assets/src/fonts/**/*.*'
     },
     watch: {
-        html: 'assets/src/**/*.html',
+        html: 'assets/src/**/*.pug',
         js: 'assets/src/js/**/*.js',
         css: 'assets/src/style/**/*.sass',
         img: 'assets/src/img/**/*.*',
@@ -51,7 +51,9 @@ var gulp = require('gulp'),  // подключаем Gulp
     pngquant = require('imagemin-pngquant'), // плагин для сжатия png
     rimraf = require('gulp-rimraf'), // плагин для удаления файлов и каталогов
     rename = require('gulp-rename'),
-    notify = require('gulp-notify');
+    notify = require('gulp-notify'),
+    pug = require('gulp-pug'),
+    webp = require('gulp-webp');
 
 /* задачи */
 
@@ -63,8 +65,9 @@ gulp.task('webserver', function () {
 // сбор html
 gulp.task('html:build', function () {
     return gulp.src(path.src.html) // выбор всех html файлов по указанному пути
-        .pipe( plumber()) // отслеживание ошибок
+        .pipe(plumber()) // отслеживание ошибок
         .pipe(rigger()) // импорт вложений
+        .pipe(pug()) // компилятор Pug
         .pipe(gulp.dest(path.build.html)) // выкладывание готовых файлов
         .pipe(webserver.reload({ stream: true })); // перезагрузка сервера
 });
@@ -81,7 +84,7 @@ gulp.task('css:build', function () {
         .pipe(cleanCSS()) // минимизируем CSS
         .pipe(sourcemaps.write('./')) // записываем sourcemap
         .pipe(gulp.dest(path.build.css)) // выгружаем в build
-        .pipe(webserver.reload({ stream: true })); // перезагрузим сервер
+        .pipe(webserver.reload({ stream: true })); // перезагрузим сервертщ
 });
 
 // сбор js
@@ -118,6 +121,8 @@ gulp.task('image:build', function () {
             pngquant(),
             imagemin.svgo({ plugins: [{ removeViewBox: false }] })
         ])))
+        .pipe(gulp.dest(path.build.img))
+        .pipe(webp())
         .pipe(gulp.dest(path.build.img)); // выгрузка готовых файлов
 });
 
